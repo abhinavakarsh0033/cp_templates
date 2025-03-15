@@ -1,3 +1,5 @@
+// z[i] ->  length of the longest string that is, at the same time, a prefix of s and a prefix of the suffix of s starting at i
+// abacaba -> [0,0,1,0,3,0,1]
 vector<int> z_function(string s) {
     int n = s.size();
     vector<int> z(n);

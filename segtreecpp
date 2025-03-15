@@ -1,0 +1,90 @@
+struct node {
+    // members
+    node() {    // constructor
+        
+    }
+};
+
+const int N = 200100;
+node tree[4*N];
+
+node merge(const node &a, const node &b) {
+    node c;
+    // c = a + b;
+    return c;
+}
+
+void build(int curr, int start, int end) {
+    if(start == end) {
+        tree[curr] = node();    // leaf nodes
+        return;
+    }
+    int mid = (start+end)/2;
+    build(2*curr,start,mid);
+    build(2*curr+1,mid+1,end);
+    tree[curr] = merge(tree[2*curr],tree[2*curr+1]);
+    return;
+}
+
+// propagate lazy
+void push(int curr, int start, int end) {
+    if(tree[curr].lazy) {
+        tree[curr].c = tree[curr].lazy;
+        if(start != end) {
+            tree[2*curr].lazy = tree[curr].lazy;
+            tree[2*curr+1].lazy = tree[curr].lazy;
+        }
+        tree[curr].lazy = 0;
+    }
+    return;
+}
+
+// update a single element
+void update(int curr, int start, int end, int idx, lli val) {
+    if(start == end) {
+        //update leaf node (tree[curr])
+        // update array (a[start]) if required
+        return;
+    }
+    int mid = (start+end)/2;
+    if(idx<=mid) update(2*curr,start,mid,idx,val);
+    else update(2*curr+1,mid+1,end,idx,val);
+    tree[curr] = merge(tree[2*curr],tree[2*curr+1]);
+    return;
+}
+
+// query for a range
+node query(int curr, int start, int end, int l, int r) {
+    // push(curr,start,end);
+    if(start>r || end<l) {
+        node x;     // 0 value
+        return x;
+    }
+    if(start>=l && end<=r) return tree[curr];
+    int mid = (start+end)/2;
+    return merge(query(2*curr,start,mid,l,r), query(2*curr+1,mid+1,end,l,r));
+}
+
+// update all the elements in the range
+void update(int curr, int start, int end, int l, int r, lli val) {
+    // push(curr,start,end);
+    if(start>r || end<l) return;
+    if(start>=l && end<=r) {
+        // update the node (tree[curr])
+
+        // push(curr,start,end);
+        return;
+    }
+    int mid = (start+end)/2;
+    update(2*curr,start,mid,l,r,val);
+    update(2*curr+1,mid+1,end,l,r,val);
+    return;
+}
+
+// query for a single element
+node query(int curr, int start, int end, int idx) {
+    if(start == end) return tree[curr];
+    int mid = (start+end)/2;
+    if(idx<=mid) return merge(tree[curr],query(2*curr,start,mid,idx));
+    return merge(tree[curr],query(2*curr+1,mid+1,end,idx));
+}
